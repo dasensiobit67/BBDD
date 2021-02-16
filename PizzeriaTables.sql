@@ -17,7 +17,7 @@ CREATE TABLE localitat (
 CREATE TABLE client (
   idclient integer,
   nom varchar(255),
-  cognon varchar(255),
+  cognom varchar(255),
   adreca varchar(255),
   codipostal varchar(255),
   telefon varchar(255),
