@@ -1,3 +1,19 @@
+CREATE DATABASE DBPizza CHARACTER SET utf8;
+USE  DBPizza;
+
+CREATE TABLE provincia (
+  idprovincia integer,
+  nom varchar(255),
+  PRIMARY KEY (idprovincia)
+);
+
+CREATE TABLE localitat (
+  idlocalitat integer,
+  nom varchar(255),
+  idprovincia integer,
+  PRIMARY KEY (idlocalitat)
+);
+
 CREATE TABLE client (
   idclient integer,
   nom varchar(255),
@@ -5,21 +21,19 @@ CREATE TABLE client (
   adreca varchar(255),
   codipostal varchar(255),
   telefon varchar(255),
-  idlocalitat integer
+  idlocalitat integer,
+  PRIMARY KEY (idclient),
+  FOREIGN KEY (idlocalitat) REFERENCES  localitat (idlocalitat)
 );
 
-CREATE TABLE producte (
-  idproducte integer,
+CREATE TABLE botiga (
+  idbotiga integer,
   nom varchar(255),
-  descripcio varchar(255),
-  imatge varchar(255),
-  preu integer,
-  idcategoria integer
-);
-
-CREATE TABLE categoria (
-  idcategoria integer,
-  nom varchar(255)
+  adreca varchar(255),
+  codipostal varchar(255),
+  idlocalitat integer,  
+  PRIMARY KEY (idbotiga),
+  FOREIGN KEY (idlocalitat) REFERENCES  localitat (idlocalitat)
 );
 
 CREATE TABLE empleat (
@@ -29,7 +43,27 @@ CREATE TABLE empleat (
   nif varchar(255),
   telefon varchar(255),
   cuinorep boolean,
-  idbotiga integer
+  idbotiga integer,
+  PRIMARY KEY (idempleat),
+  FOREIGN KEY (idbotiga) REFERENCES  botiga (idbotiga)
+);
+
+CREATE TABLE categoria (
+  idcategoria integer,
+  nom varchar(255),
+  PRIMARY KEY (idcategoria)
+);
+
+
+CREATE TABLE producte (
+  idproducte integer,
+  nom varchar(255),
+  descripcio varchar(255),
+  imatge varchar(255),
+  preu integer,
+  idcategoria integer,
+  PRIMARY KEY (idproducte),
+  FOREIGN KEY (idcategoria) REFERENCES  categoria (idcategoria)
 );
 
 CREATE TABLE comanda (
@@ -39,40 +73,11 @@ CREATE TABLE comanda (
   datahoraentrega datetime,
   cant integer,
   total integer,
-  idbotiga integer,
+  idempleat integer,
   idclient integer,
-  idproducte integer
+  idproducte integer,
+  PRIMARY KEY (idcomanda),
+  FOREIGN KEY (idempleat) REFERENCES  empleat (idempleat),
+  FOREIGN KEY (idclient) REFERENCES  client (idclient),
+  FOREIGN KEY (idproducte) REFERENCES  producte (idproducte)
 );
-
-CREATE TABLE botiga (
-  idbotiga integer,
-  nom varchar(255),
-  adreca varchar(255),
-  codipostal varchar(255),
-  idlocalitat integer
-);
-
-CREATE TABLE provincia (
-  idprovincia integer,
-  nom varchar(255)
-);
-
-CREATE TABLE localitat (
-  idlocalitat integer,
-  nom varchar(255),
-  idprovincia integer
-);
-
-ALTER TABLE provincia ADD FOREIGN KEY (idprovincia) REFERENCES localitat (idprovincia);
-
-ALTER TABLE localitat ADD FOREIGN KEY (idlocalitat) REFERENCES botiga (idlocalitat);
-
-ALTER TABLE comanda ADD FOREIGN KEY (idclient) REFERENCES client (idclient);
-
-ALTER TABLE comanda ADD FOREIGN KEY (idproducte) REFERENCES producte (idproducte);
-
-ALTER TABLE botiga ADD FOREIGN KEY (idbotiga) REFERENCES comanda (idbotiga);
-
-ALTER TABLE producte ADD FOREIGN KEY (idcategoria) REFERENCES categoria (idcategoria);
-
-ALTER TABLE botiga ADD FOREIGN KEY (idbotiga) REFERENCES empleat (idbotiga);
